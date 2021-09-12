@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"timeservice/lib"
 
 	"github.com/joho/godotenv"
 )
@@ -32,50 +33,31 @@ func main() {
 				log.Fatal("Error loading .env file")
 			}
 		}
-		// host = os.Getenv("HOST")
-		// port = os.Getenv("PORT")
+
 		fmt.Printf("Loaded from .env host=%v port=%v", host, port)
 	}
-
 	http.HandleFunc("/ptlist", mainHandler)
-
 	err = http.ListenAndServe(host+":"+port, nil)
-
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	// w.WriteHeader(200)
-	// fmt.Fprintf(w, "Hello there from kostas %s\n", r.URL.Query()["t1"])
-
-	// query := r.URL.Query()
-	// period := query["period"][0]
-	// tz := query["tz"][0]
-	// t1 := query["t1"][0]
-	// t2 := query["t2"][0]
-
-	// fmt.Printf("%s %s %s %s\n", period, tz, t1, t2)
-	// loc := setLocation(tz)
-	// fmt.Printf(loc.String())
-
+	query := r.URL.Query()
+	tz, t1, t2, period := query["period"][0], query["tz"][0], query["t1"][0], query["t2"][0]
+	timeStamps, err := lib.GenerateTimeStamps(t1, t2, tz, period)
 	w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(404)
-	// errR := ErrorResponse{
-	// Status: "error",
-	// Desc:   "Unsupported period",
-	// }
-
-	// json.NewEncoder(w).Encode(errR)
-	w.WriteHeader(200)
-	times := TimeStampResponse{
-		"2344555555",
-		"3434343434",
-		"2323232323",
-		"23232323232",
+	if err != nil {
+		errorResponse := ErrorResponse{
+			Status: "status",
+			Desc:   err.Error(),
+		}
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(errorResponse)
+	} else {
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(timeStamps)
 	}
-
-	json.NewEncoder(w).Encode(times)
 
 }
