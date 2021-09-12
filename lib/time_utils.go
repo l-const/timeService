@@ -47,22 +47,24 @@ func AddTime(t time.Time, dur interface{}) (time.Time, error) {
 	}
 }
 
-func TruncateOriginal(tm time.Time, dur interface{}) time.Time {
+func truncateOriginal(tm time.Time, dur interface{}) time.Time {
 	var newtm time.Time
 	switch v := dur.(type) {
 	case string:
 		if v == "1h" {
-
+			newtm = time.Date(tm.Year(), tm.Month(), tm.Day(), tm.Hour()+1, 0, 0, 0, time.UTC)
+			return newtm
 		} else if v == "1d" {
-
+			return tm
 		} else if v == "1mo" {
 			newtm = tm.AddDate(0, 1, -tm.Day())
+			return newtm
 		} else if v == "1y" {
-			newtm = time.Date(tm.Year(), 12, 31, 0, 0, 0, 0, time.UTC)
+			newtm = time.Date(tm.Year(), 12, 31, 22, 0, 0, 0, time.UTC)
+			return newtm
 		} else {
-
+			return tm
 		}
-
 	default:
 		fmt.Println("noting")
 		return tm
@@ -72,7 +74,7 @@ func TruncateOriginal(tm time.Time, dur interface{}) time.Time {
 func fromTimeToTime(from time.Time, to time.Time, dur interface{}) ([]time.Time, error) {
 	var err error
 	timeSlice := make([]time.Time, 0)
-	initialT := from.Truncate(time.Hour).Add(time.Hour)
+	initialT := truncateOriginal(from, dur)
 	curT := initialT
 	for !curT.After(to) {
 		timeSlice = append(timeSlice, curT)

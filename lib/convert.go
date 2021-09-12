@@ -51,11 +51,8 @@ func intoTimeFormat(timeString string, locStr string) (time.Time, error) {
 		return time.Time{}, err
 	}
 	seconds, err := strconv.Atoi(timeString[13:15])
-	// date := time.Date(year, time.Month(month), day, hour, minutes, seconds, 0, location).In(time.UTC)
 	location = time.UTC
 	date := time.Date(year, time.Month(month), day, hour, minutes, seconds, 0, location)
-	// date := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC).In(location)
-	// date = date.Add(time.Hour*time.Duration(hour) + time.Minute*time.Duration(minutes) + time.Second*time.Duration(seconds))
 	return date, err
 
 }
