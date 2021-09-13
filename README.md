@@ -64,7 +64,7 @@ How to run:
 One simple way using host networking is the following:
 
 ```shell
-  docker run -d  --netwrok=host timeservice 
+  docker run -d  --network=host timeservice 
 ```
 Now, the service is accessible through **http://localhost:8080**
 
