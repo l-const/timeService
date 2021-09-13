@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -26,14 +25,18 @@ func main() {
 		host = os.Args[1]
 		port = os.Args[2]
 	} else {
-		host, errH := os.LookupEnv("HOST")
-		port, errP := os.LookupEnv("PORT")
+		hostEnv, errH := os.LookupEnv("HOST")
+		portEnv, errP := os.LookupEnv("PORT")
 		if !errH || !errP {
 			err = godotenv.Load("./config/.env")
 			if err != nil {
 				log.Fatal("Error loading .env file")
 			}
-			fmt.Printf("Loaded from .env host=%v port=%v", host, port)
+			host = os.Getenv("HOST")
+			port = os.Getenv("PORT")
+		} else {
+			host = hostEnv
+			port = portEnv
 		}
 	}
 	http.HandleFunc("/ptlist", mainHandler)
@@ -46,7 +49,6 @@ func main() {
 func mainHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	query := r.URL.Query()
-	// tz, t1, t2, period := query["period"][0], query["tz"][0], query["t1"][0], query["t2"][0]
 	if len(query["period"]) == 0 || len(query["t1"]) == 0 || len(query["t2"]) == 0 || len(query["tz"]) == 0 {
 		err = errors.New("wrong query parameters")
 	}
