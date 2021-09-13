@@ -2,7 +2,6 @@ package lib
 
 import (
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -80,18 +79,21 @@ func truncateInit(tm time.Time, dur interface{}) time.Time {
 			newtm = time.Date(tm.Year(), tm.Month(), tm.Day(), tm.Hour()+1, 0, 0, 0, tm.Location())
 			return newtm
 		} else if v == "1mo" {
-			fmt.Println("month is daylight sacing time : ", tm.IsDST())
 			newtm = time.Date(tm.Year(), tm.Month(), 1, tm.Hour()+1, 0, 0, 0, tm.Location())
 			newtm = newtm.AddDate(0, 1, -1)
+			if tm.IsDST() && !newtm.IsDST() {
+				newtm = newtm.Add(time.Hour)
+			}
+
 			if !tm.IsDST() && newtm.IsDST() {
-				newtm = newtm.Add(time.Hour * 2)
+				newtm = newtm.Add(-time.Hour)
 			}
 			return newtm
 		} else if v == "1y" {
 			if tm.IsDST() {
-				newtm = time.Date(tm.Year(), 12, 31, tm.Hour()+1, 0, 0, 0, tm.Location())
-			} else {
 				newtm = time.Date(tm.Year(), 12, 31, tm.Hour()+2, 0, 0, 0, tm.Location())
+			} else {
+				newtm = time.Date(tm.Year(), 12, 31, tm.Hour()+1, 0, 0, 0, tm.Location())
 			}
 			return newtm
 		} else {

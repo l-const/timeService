@@ -9,7 +9,7 @@ import (
 func main() {
 	locStr := "Europe/Athens"
 	var err error
-	time1, time2, dur := "20211030T204603Z", "20211031T123456Z", "1h"
+	time1, time2, dur := "20210714T204603Z", "20210715T123456Z", "1h"
 	response, err := lib.GenerateTimeStamps(time1, time2, locStr, dur)
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", " ")
@@ -33,7 +33,7 @@ func main() {
 	}
 	enc.Encode(response)
 
-	time1, time2, durY := "20180214T204603Z", "20211115T123456Z", "1y"
+	time1, time2, durY := "20180414T204603Z", "20211115T123456Z", "1y"
 	response, err = lib.GenerateTimeStamps(time1, time2, locStr, durY)
 	if err != nil {
 		panic(err)
