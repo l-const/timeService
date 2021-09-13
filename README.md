@@ -1,16 +1,20 @@
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/l-const/timeService) 
 # timeService
 
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/l-const/timeService)
+### Run locally
 
-## Run locally
----
+
+
+
 #### 1. Install dependencies
+
 ---
 
 ```code
 	go mod download
 ```
-###  2. Run Server
+####  2. Run Server
+
 ---
 
 ```shell
@@ -25,8 +29,18 @@ e.g
 
 #### 3. Regarding Host/port variables:
 
- * If not host or port variable is passed during execution the server tries to read ENVIRONMENT VARIABLES **HOST** and **PORT**.
- *  The environment variables are predefined here [config/env.go](https://github.com/l-const/timeService/blob/main/config/.env#L2-L3) as follow: **HOST**=localhost, **PORT**=8080.
+---
+
+
+ * If not host or port variable is passed during execution the server tries to read the ENVIRONMENT vars **HOST** and **PORT**.
+ * The environment variables are predefined in [config/env.go](https://github.com/l-const/timeService/blob/main/config/.env#L2-L3) as follow: **HOST**=localhost, **PORT**=8080.
+
+e.g running without specifying anything: 
+
+
+```shell
+	go run ./cmd/server/main.go 
+```
 
 ## Run with Docker
 ---
