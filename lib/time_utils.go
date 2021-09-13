@@ -2,23 +2,50 @@ package lib
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
+func addHour(t time.Time) time.Time {
+	newtm := time.Date(t.Year(), t.Month(), t.Day(), t.Hour()+1, 0, 0, 0, t.Location())
+	if t.IsDST() && !newtm.IsDST() {
+		newtm = newtm.Add(time.Hour)
+	}
+	if !t.IsDST() && newtm.IsDST() {
+		newtm = newtm.Add(-time.Hour)
+	}
+	return newtm
+}
+
 func addDay(t time.Time) time.Time {
-	return t.AddDate(0, 0, 1)
+	newtm := t.AddDate(0, 0, 1)
+	if t.IsDST() && !newtm.IsDST() {
+		newtm = newtm.Add(time.Hour)
+	}
+	if !t.IsDST() && newtm.IsDST() {
+		newtm = newtm.Add(-time.Hour)
+	}
+	return newtm
+
+}
+
+func addMonth(t time.Time) time.Time {
+	newtm := time.Date(t.Year(), t.Month()+1, 1, t.Hour(), 0, 0, 0, t.Location())
+	newtm = newtm.AddDate(0, 1, -1)
+
+	if t.IsDST() && !newtm.IsDST() {
+		newtm = newtm.Add(time.Hour)
+	}
+
+	if !t.IsDST() && newtm.IsDST() {
+		newtm = newtm.Add(-time.Hour)
+	}
+
+	return newtm
 }
 
 func addYear(t time.Time) time.Time {
 	return t.AddDate(1, 0, 0)
-}
-
-func addHour(t time.Time) time.Time {
-	return t.Add(time.Hour)
-}
-
-func addMonth(t time.Time) time.Time {
-	return t.AddDate(0, 1, 0)
 }
 
 func AddTime(t time.Time, dur interface{}) (time.Time, error) {
@@ -51,15 +78,25 @@ func truncateOriginal(tm time.Time, dur interface{}) time.Time {
 	switch v := dur.(type) {
 	case string:
 		if v == "1h" {
-			newtm = time.Date(tm.Year(), tm.Month(), tm.Day(), tm.Hour()+1, 0, 0, 0, time.UTC)
+			newtm = time.Date(tm.Year(), tm.Month(), tm.Day(), tm.Hour()+1, 0, 0, 0, tm.Location())
 			return newtm
 		} else if v == "1d" {
-			return tm
+			newtm = time.Date(tm.Year(), tm.Month(), tm.Day(), tm.Hour()+1, 0, 0, 0, tm.Location())
+			return newtm
 		} else if v == "1mo" {
-			newtm = tm.AddDate(0, 1, -tm.Day())
+			fmt.Println("month is daylight sacing time : ", tm.IsDST())
+			newtm = time.Date(tm.Year(), tm.Month(), 1, tm.Hour()+1, 0, 0, 0, tm.Location())
+			newtm = newtm.AddDate(0, 1, -1)
+			if !tm.IsDST() && newtm.IsDST() {
+				newtm = newtm.Add(time.Hour * 2)
+			}
 			return newtm
 		} else if v == "1y" {
-			newtm = time.Date(tm.Year(), 12, 31, 22, 0, 0, 0, time.UTC)
+			if tm.IsDST() {
+				newtm = time.Date(tm.Year(), 12, 31, tm.Hour()+1, 0, 0, 0, tm.Location())
+			} else {
+				newtm = time.Date(tm.Year(), 12, 31, tm.Hour()+2, 0, 0, 0, tm.Location())
+			}
 			return newtm
 		} else {
 			return tm
@@ -69,7 +106,7 @@ func truncateOriginal(tm time.Time, dur interface{}) time.Time {
 	}
 }
 
-func fromTimeToTime(from time.Time, to time.Time, dur interface{}) ([]time.Time, error) {
+func fromTimeToTime(from time.Time, to time.Time, dur interface{}, loc *time.Location) ([]time.Time, error) {
 	var err error
 	timeSlice := make([]time.Time, 0)
 	initialT := truncateOriginal(from, dur)
@@ -78,6 +115,5 @@ func fromTimeToTime(from time.Time, to time.Time, dur interface{}) ([]time.Time,
 		timeSlice = append(timeSlice, curT)
 		curT, err = AddTime(curT, dur)
 	}
-
 	return timeSlice, err
 }

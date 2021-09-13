@@ -3,7 +3,7 @@
 
 ### **Implementation Details:**
 
-This code works only with go **1.17** because of the usage of a specific method of the **time** package that was recently added, but it can easily be backported. For more details see [here](https://github.com/golang/go/blob/master/src/time/time.go#L1343-L1346) and [here](https://github.com/golang/go/issues/42102).
+This code works only with go **1.17** because of the usage of a specific method, regarding Daylight saving time, of the **time** package that was recently added, but it can easily be backported. For more details see [here](https://github.com/golang/go/blob/master/src/time/time.go#L1343-L1346) and [here](https://github.com/golang/go/issues/42102).
 
 ## Run locally
 
