@@ -1,37 +1,43 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"encoding/json"
 	"os"
-
-	"github.com/joho/godotenv"
+	"timeservice/lib"
 )
 
 func main() {
-	var host, port string
+	locStr := "Europe/Athens"
 	var err error
-	if len(os.Args) == 3 {
-		host = os.Args[1]
-		port = os.Args[2]
-	} else {
-		err = godotenv.Load("./config/.env")
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
-		host = os.Getenv("HOST")
-		port = os.Getenv("PORT")
-	}
-	var url string = "http://" + host + ":" + port + "/ptlist?period=1h&tz=Europe/Athens&t1=20210714T204603Z&t2=20210715T123456Z"
-	resp, err := http.Get(url)
+	time1, time2, dur := "20211030T204603Z", "20211031T123456Z", "1h"
+	response, err := lib.GenerateTimeStamps(time1, time2, locStr, dur)
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", " ")
+
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	enc.Encode(response)
+
+	time1, time2, durD := "20211010T204603Z", "20211115T123456Z", "1d"
+	response, err = lib.GenerateTimeStamps(time1, time2, locStr, durD)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
-	fmt.Println(body)
+	enc.Encode(response)
+
+	time1, time2, durM := "20210214T204603Z", "20211115T123456Z", "1mo"
+	response, err = lib.GenerateTimeStamps(time1, time2, locStr, durM)
+	if err != nil {
+		panic(err)
+	}
+	enc.Encode(response)
+
+	time1, time2, durY := "20180214T204603Z", "20211115T123456Z", "1y"
+	response, err = lib.GenerateTimeStamps(time1, time2, locStr, durY)
+	if err != nil {
+		panic(err)
+	}
+	enc.Encode(response)
+
 }
