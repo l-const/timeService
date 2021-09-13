@@ -69,5 +69,5 @@ One simple way using host networking is the following:
 Now, the service is accessible through **http://localhost:8080**
 
 ```shell
-	curl -X GET  "http://localhost:8080/ptlist?period=1h&tz=Europe/Athens&t1=20210714T204603Z&t2=20210715T123456Z"
+curl -X GET  "http://localhost:8080/ptlist?period=1h&tz=Europe/Athens&t1=20210714T204603Z&t2=20210715T123456Z"
 ```
