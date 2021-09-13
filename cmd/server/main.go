@@ -32,8 +32,10 @@ func main() {
 			if err != nil {
 				log.Fatal("Error loading .env file")
 			}
-			host = os.Getenv("HOST")
-			port = os.Getenv("PORT")
+			hostDotEnv := os.Getenv("HOST")
+			portDotEnv := os.Getenv("PORT")
+			host = hostDotEnv
+			port = portDotEnv
 		} else {
 			host = hostEnv
 			port = portEnv
@@ -61,7 +63,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
-	tz, t1, t2, period := query["period"][0], query["tz"][0], query["t1"][0], query["t2"][0]
+	period, tz, t1, t2 := query["period"][0], query["tz"][0], query["t1"][0], query["t2"][0]
 	timeStamps, err := lib.GenerateTimeStamps(t1, t2, tz, period)
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
