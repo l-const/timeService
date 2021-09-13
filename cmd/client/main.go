@@ -24,7 +24,7 @@ func main() {
 		host = os.Getenv("HOST")
 		port = os.Getenv("PORT")
 	}
-	var url string = "http://" + host + ":" + port + "/ptlist?Europe/Athens&t1=20210714T204603Z&t2=20210715T123456Z"
+	var url string = "http://" + host + ":" + port + "/ptlist?period=1h&tz=Europe/Athens&t1=20210714T204603Z&t2=20210715T123456Z"
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatalln(err)
