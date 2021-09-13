@@ -62,18 +62,14 @@ func AddTime(t time.Time, dur interface{}) (time.Time, error) {
 		} else if dur == "1y" {
 			return addYear(t), nil
 		} else {
-			timeDur, err := time.ParseDuration(v)
-			if err != nil {
-				return time.Time{}, errors.New("Unsupported period")
-			}
-			return t.Add(timeDur), nil
+			return time.Time{}, errors.New("Unsupported period")
 		}
 	default:
 		return time.Time{}, errors.New("Unsupported period")
 	}
 }
 
-func truncateOriginal(tm time.Time, dur interface{}) time.Time {
+func truncateInit(tm time.Time, dur interface{}) time.Time {
 	var newtm time.Time
 	switch v := dur.(type) {
 	case string:
@@ -109,11 +105,14 @@ func truncateOriginal(tm time.Time, dur interface{}) time.Time {
 func fromTimeToTime(from time.Time, to time.Time, dur interface{}, loc *time.Location) ([]time.Time, error) {
 	var err error
 	timeSlice := make([]time.Time, 0)
-	initialT := truncateOriginal(from, dur)
+	initialT := truncateInit(from, dur)
 	curT := initialT
 	for !curT.After(to) {
 		timeSlice = append(timeSlice, curT)
 		curT, err = AddTime(curT, dur)
+		if err != nil {
+			return []time.Time{}, err
+		}
 	}
 	return timeSlice, err
 }

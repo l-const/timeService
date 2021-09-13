@@ -22,11 +22,8 @@ func intoString(tm time.Time) string {
 	return tmFor
 }
 
-func intoTimeFormat(timeString string, locStr string) (time.Time, error) {
-	location, err := time.LoadLocation(locStr)
-	if err != nil {
-		return time.Time{}, err
-	}
+func intoTimeFormat(timeString string, loc *time.Location) (time.Time, error) {
+
 	if len(timeString) != 16 {
 		return time.Time{}, errors.New("wrong format for string timestamp")
 	}
@@ -51,7 +48,6 @@ func intoTimeFormat(timeString string, locStr string) (time.Time, error) {
 		return time.Time{}, err
 	}
 	seconds, err := strconv.Atoi(timeString[13:15])
-	date := time.Date(year, time.Month(month), day, hour, minutes, seconds, 0, location)
+	date := time.Date(year, time.Month(month), day, hour, minutes, seconds, 0, loc)
 	return date, err
-
 }
