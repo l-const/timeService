@@ -1,33 +1,32 @@
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/l-const/timeService) 
 # timeService
 
-### Run locally
+## Run locally
 
 
 
-
-#### 1. Install dependencies
+#### 1. **Install dependencies**
 
 ---
 
 ```code
-	go mod download
+ go mod download
 ```
-####  2. Run Server
+####  2. **Run Server**
 
 ---
 
 ```shell
-	go run ./cmd/server/main.go <host> <port>
+ go run ./cmd/server/main.go <host> <port>
 ```
 
 e.g
 
 ```shell
-	go run ./cmd/server/main.go localhost 9998
+ go run ./cmd/server/main.go localhost 9998
 ```
 
-#### 3. Regarding Host/port variables:
+#### 3. **Regarding Host/port variables**:
 
 ---
 
@@ -39,7 +38,7 @@ e.g running without specifying anything:
 
 
 ```shell
-	go run ./cmd/server/main.go 
+  go run ./cmd/server/main.go 
 ```
 
 ## Run with Docker
