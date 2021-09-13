@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -32,9 +33,8 @@ func main() {
 			if err != nil {
 				log.Fatal("Error loading .env file")
 			}
+			fmt.Printf("Loaded from .env host=%v port=%v", host, port)
 		}
-
-		fmt.Printf("Loaded from .env host=%v port=%v", host, port)
 	}
 	http.HandleFunc("/ptlist", mainHandler)
 	err = http.ListenAndServe(host+":"+port, nil)
@@ -44,7 +44,21 @@ func main() {
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
+	var err error
 	query := r.URL.Query()
+	// tz, t1, t2, period := query["period"][0], query["tz"][0], query["t1"][0], query["t2"][0]
+	if len(query["period"]) == 0 || len(query["t1"]) == 0 || len(query["t2"]) == 0 || len(query["tz"]) == 0 {
+		err = errors.New("wrong query parameters")
+	}
+	if err != nil {
+		errorResponse := ErrorResponse{
+			Status: "status",
+			Desc:   err.Error(),
+		}
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
 	tz, t1, t2, period := query["period"][0], query["tz"][0], query["t1"][0], query["t2"][0]
 	timeStamps, err := lib.GenerateTimeStamps(t1, t2, tz, period)
 	w.Header().Set("Content-Type", "application/json")
@@ -53,11 +67,11 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 			Status: "status",
 			Desc:   err.Error(),
 		}
-		w.WriteHeader(404)
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(errorResponse)
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(timeStamps)
+		return
 	}
 
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(timeStamps)
 }

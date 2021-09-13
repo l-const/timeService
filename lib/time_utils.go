@@ -2,7 +2,6 @@ package lib
 
 import (
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -66,7 +65,6 @@ func truncateOriginal(tm time.Time, dur interface{}) time.Time {
 			return tm
 		}
 	default:
-		fmt.Println("noting")
 		return tm
 	}
 }
