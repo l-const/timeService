@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -34,7 +33,5 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	fmt.Println(body)
-	fmt.Println(time.Now(), time.Now().UTC())
 }

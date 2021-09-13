@@ -53,6 +53,18 @@ or alternatively:
 #### 1. Building the image
 
 ```shell
-  docker build 
+  docker build -t timeservice .
 ```
+
+#### 2. Running the container
+
+
+How to run:
+
+One simply way using host networking is the following:
+
+```shell
+  docker run -d  --netwrok=host timeservice 
+```
+Now, the service is accessible through **http://localhost:8080**
 
