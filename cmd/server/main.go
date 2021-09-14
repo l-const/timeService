@@ -56,7 +56,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		errorResponse := ErrorResponse{
-			Status: "status",
+			Status: "error",
 			Desc:   err.Error(),
 		}
 		w.WriteHeader(400)
@@ -68,7 +68,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		errorResponse := ErrorResponse{
-			Status: "status",
+			Status: "error",
 			Desc:   err.Error(),
 		}
 		w.WriteHeader(400)
